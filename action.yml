@@ -12,7 +12,7 @@ inputs:
     description: "setup-terraform actions by defaults uses a wrapper script. Sometime this gets in the way of certain operations"
     default: 'false'
   setup_terraform:
-    default: "false"
+    default: "true"
     description: "Whether to setup Terraform"
   workspace:
     required: false
