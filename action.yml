@@ -99,7 +99,7 @@ runs:
       shell: bash
       if: ${{ inputs.varfile == '' }}
       run: |
-        echo "TF_CLI_ARGS='${{ inputs.apply_args }}" >> $GITHUB_ENV
+        echo "TF_CLI_ARGS='${{ inputs.apply_args }}'" >> $GITHUB_ENV
 
     - name: Terraform Apply
       shell: bash
