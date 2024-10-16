@@ -7,15 +7,19 @@ inputs:
   terraform_api:
     required: false
     description: "The Terraform API hostname"
+  terraform_wrapper:
+    required: false
+    description: "setup-terraform actions by defaults uses a wrapper script. Sometime this gets in the way of certain operations"
+    default: 'false'
+  setup_terraform:
+    default: "false"
+    description: "Whether to setup Terraform"
   workspace:
     required: false
     description: "The Terraform workspace to use"
   varfile:
     required: false
     description: "The variable file to use with Terraform"
-  setup_terraform:
-    default: "false"
-    description: "Whether to setup Terraform"
   apply_args:
     required: false
     description: "Additional arguments for 'terraform init'"
@@ -32,6 +36,7 @@ inputs:
     required: false
     description: "The cache bucket"
     default: image-pipeline-assets
+  
 
 runs:
   using: "composite"
@@ -71,17 +76,19 @@ runs:
 
     - name: Setup Terraform
       uses: CSVD/gh-actions-setup-terraform@v2
-      if: ${{ inputs.setup_terraform && env.TFE_TOKEN != '' }}
+      if: ${{ inputs.setup_terraform == 'true' && env.TFE_TOKEN != '' }}
       with:
         terraform_version: ${{ inputs.terraform_version }}
         cli_config_credentials_token: ${{ env.TFE_TOKEN }}
         cli_config_credentials_hostname: ${{ inputs.terraform_api }}
+        terraform_wrapper: ${{ inputs.terraform_wrapper }}
 
     - name: Setup Terraform
       uses: CSVD/gh-actions-setup-terraform@v2
-      if: ${{ inputs.setup_terraform && env.TFE_TOKEN == '' }}
+      if: ${{ inputs.setup_terraform == 'true' && env.TFE_TOKEN == '' }}
       with:
         terraform_version: ${{ inputs.terraform_version }}
+        terraform_wrapper: ${{ inputs.terraform_wrapper }}
 
     - name: Set Workspace
       shell: bash
@@ -103,4 +110,4 @@ runs:
 
     - name: Terraform Apply
       shell: bash
-      run: terraform apply -auto-approve terraform.plan
+      run: terraform apply terraform.plan
