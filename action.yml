@@ -10,19 +10,13 @@ inputs:
   terraform_wrapper:
     required: false
     description: "setup-terraform actions by defaults uses a wrapper script. Sometime this gets in the way of certain operations"
-    default: 'false'
+    default: "false"
   setup_terraform:
     default: "true"
     description: "Whether to setup Terraform"
   workspace:
     required: false
     description: "The Terraform workspace to use"
-  varfile:
-    required: false
-    description: "The variable file to use with Terraform"
-  apply_args:
-    required: false
-    description: "Additional arguments for 'terraform init'"
   download_cache:
     default: "false"
     description: "Whether to download the Terraform cache"
@@ -36,7 +30,6 @@ inputs:
     required: false
     description: "The cache bucket"
     default: image-pipeline-assets
-  
 
 runs:
   using: "composite"
@@ -95,18 +88,6 @@ runs:
       if: ${{ inputs.workspace != '' }}
       run: |
         echo "TF_WORKSPACE=${{ inputs.workspace }}" >> $GITHUB_ENV
-
-    - name: Set TF_CLI_ARGS (Varfile)
-      shell: bash
-      if: ${{ inputs.varfile != '' }}
-      run: |
-        echo "TF_CLI_ARGS=-var-file=${{ inputs.varfile }} ${{ inputs.apply_args }}" >> $GITHUB_ENV
-
-    - name: Set TF_CLI_ARGS (NonVarfile)
-      shell: bash
-      if: ${{ inputs.varfile == '' }}
-      run: |
-        echo "TF_CLI_ARGS='${{ inputs.apply_args }}'" >> $GITHUB_ENV
 
     - name: Terraform Apply
       shell: bash
